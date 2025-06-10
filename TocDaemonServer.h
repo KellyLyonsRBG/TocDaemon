@@ -16,15 +16,23 @@
 #pragma once
 #include <string>
 #include <nlohmann/json.hpp>
+#include <thread>
+#include "Heartbeat/tocHeartbeat.h"
 
-class TocDaemonServer {
+class TocDaemonServer : public Heartbeat {
 public:
     TocDaemonServer(const nlohmann::json& config);
     TocDaemonServer(const std::string& configFile, const std::string& logFile = "");
     ~TocDaemonServer();
-    bool doingOkay() const;
+    bool doingOkay();
+    void startPulsar();
+    void stopPulsar();
+    void initSubmodulesFromConfig();
+    void initPropertyManagerServer();
 private:
     bool m_ok = true;
     nlohmann::json m_config;
+    std::thread m_pulsar;
+    bool m_pulsarRunning = false;
 };
 

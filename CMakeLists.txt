@@ -16,6 +16,7 @@ find_package(nlohmann_json CONFIG REQUIRED)
 set(TOCDAEMON_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/TocDaemonProcess.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/TocDaemonServer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Heartbeat/TocHeartbeat.cpp
 )
 
 #-------------------------------------------------------------------------------

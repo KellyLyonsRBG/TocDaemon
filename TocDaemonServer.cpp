@@ -17,25 +17,56 @@
 #include "TocDaemonServer.h"
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <iostream>
+#include <chrono>
 
 TocDaemonServer::TocDaemonServer(const nlohmann::json& config)
-    : m_ok(true), m_config(config) {
-    // Use the config as needed
+    : Heartbeat(5.0), m_ok(true), m_config(config) {
+    initPropertyManagerServer();
+    initSubmodulesFromConfig();
+    startPulsar();
 }
 
 TocDaemonServer::TocDaemonServer(const std::string& configFile, const std::string& logFile)
-    : m_ok(true) {
-    // Load config from file using nlohmann::json
+    : Heartbeat(5.0), m_ok(true) {
     std::ifstream in(configFile);
     if (in) {
         in >> m_config;
     } else {
         m_ok = false;
     }
+    initPropertyManagerServer();
+    initSubmodulesFromConfig();
+    startPulsar();
 }
 
-TocDaemonServer::~TocDaemonServer() {}
+TocDaemonServer::~TocDaemonServer() {
+    stopPulsar();
+}
 
-bool TocDaemonServer::doingOkay() const {
-    return m_ok;
+bool TocDaemonServer::doingOkay() {
+    return m_ok && Heartbeat::doingOkay();
+}
+
+void TocDaemonServer::startPulsar() {
+    m_pulsarRunning = true;
+    m_pulsar = std::thread([this]() {
+        while (m_pulsarRunning) {
+            this->pulse();
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+    });
+}
+
+void TocDaemonServer::stopPulsar() {
+    m_pulsarRunning = false;
+    if (m_pulsar.joinable()) m_pulsar.join();
+}
+
+void TocDaemonServer::initSubmodulesFromConfig() {
+    std::cout << "[TocDaemonServer] Initializing submodules from config..." << std::endl;
+}
+
+void TocDaemonServer::initPropertyManagerServer() {
+    std::cout << "[TocDaemonServer] Initializing property manager server..." << std::endl;
 }
