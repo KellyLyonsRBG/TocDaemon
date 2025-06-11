@@ -17,6 +17,7 @@ set(TOCDAEMON_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/TocDaemonProcess.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/TocDaemonServer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Heartbeat/TocHeartbeat.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
 )
 
 #-------------------------------------------------------------------------------
